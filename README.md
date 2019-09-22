@@ -1,2 +1,2 @@
 # MediaBot
-The Bot help you choose a movie
+The Bot helps you choose a movie
