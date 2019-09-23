@@ -15,6 +15,7 @@ public class Console
         var text = in.next();
 //        in.close();
 //        'Привет Никита'
+//        "Привет Данил"
         return text;
     }
 }
