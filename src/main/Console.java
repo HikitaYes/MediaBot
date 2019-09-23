@@ -14,6 +14,7 @@ public class Console
         var in = new Scanner(System.in);
         var text = in.next();
 //        in.close();
+//        'Привет Никита'
         return text;
     }
 }
