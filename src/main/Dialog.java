@@ -1,24 +1,25 @@
 package main;
-import static main.Console.write;
-import static main.Console.read;
+import java.util.Scanner;
+import static main.Logic.answerProcessing;
+import static main.Logic.hello;
 
 public class Dialog
 {
-    private static String answerProcessing(String text)
-    {
-        switch (text)
-        {
-            case ("/help"):
-                return "Я бот, который поможет тебе подобрать фильм по настроению.";
+    private static Scanner in = new Scanner(System.in);
 
-            default:
-                return "Я не понял. Ответь по-другому";
-        }
+    private static void write(String text)
+    {
+        System.out.println(text);
+    }
+
+    private static String read()
+    {
+        return in.next();
     }
 
     public static void dialog()
     {
-        write("Привет! Я бот, который поможет тебе подобрать фильм по настроению. Для начала укажи свой любимый жанр");
+        write(hello());
         while (true)
         {
             var userText = read();
