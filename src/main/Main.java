@@ -4,6 +4,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-	    Dialog.dialog();
+//	    Logic.readDate();
+        Dialog.dialog();
     }
 }

@@ -1,13 +1,12 @@
 package main;
 import java.util.Scanner;
-import static main.Logic.answerProcessing;
-import static main.Logic.hello;
+import static main.Logic.*;
 
 public class Dialog
 {
     private static Scanner in = new Scanner(System.in);
 
-    private static void write(String text)
+    public static void write(String text)
     {
         System.out.println(text);
     }
