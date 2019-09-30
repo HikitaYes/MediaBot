@@ -4,7 +4,8 @@ public class Main
 {
     public static void main(String[] args)
     {
-//	    Logic.readDate();
-        Dialog.dialog();
+        var bot = new Bot();
+        bot.dialog();
+
     }
 }
