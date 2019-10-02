@@ -47,7 +47,7 @@ class Logic
             return "Теперь укажи любимого актера";
         }
         if (userData.actor.equals(""))
-        { 
+        {
             userData.actor = text;
 
             if (!data.getActors().containsKey(userData.actor))
