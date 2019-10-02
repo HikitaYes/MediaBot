@@ -6,6 +6,5 @@ public class Main
     {
         var bot = new Bot();
         bot.dialog();
-
     }
 }

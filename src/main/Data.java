@@ -26,9 +26,7 @@ class Data
         readDate();
     }
 
-    public HashMap<String, ArrayList<String>> getGenres() {
-        return genresType;
-    }
+    public HashMap<String, ArrayList<String>> getGenres() { return genresType; }
 
     public HashMap<String, ArrayList<String>> getActors() {
         return actorsName;

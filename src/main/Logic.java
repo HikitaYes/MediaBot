@@ -29,9 +29,13 @@ class Logic
         filmsByGenre.retainAll(filmsByActors);
         userData.actor = "";
         userData.genre = "";
-        var result = "";
-        for (String film : filmsByGenre)
-            result += film + " ,";
+        var result = "Таких фильмов в моем списке нет :(";
+        if (filmsByGenre.size() != 0)
+        {
+            result = filmsByGenre.get(0);
+            for (var i = 1; i < filmsByGenre.size(); i++)
+                result += ", " + filmsByGenre.get(i);
+        }
         return result;
     }
 
@@ -41,18 +45,23 @@ class Logic
             return "Я бот, который поможет тебе подобрать фильм по настроению.";
         if (userData.genre.equals(""))
         {
-            if (!data.getGenres().containsKey(userData.genre))
-                return "Такого жанра нет в моем списке :(";
             userData.genre = text;
+            if (!data.getGenres().containsKey(userData.genre))
+            {
+                userData.genre = "";
+                return "Такого жанра в моем списке нет :(";
+            }
             return "Теперь укажи любимого актера";
         }
         if (userData.actor.equals(""))
         {
             userData.actor = text;
-
             if (!data.getActors().containsKey(userData.actor))
-                return "Такого актера нет в моем списке :(";
-            return "Тебе должны понравится эти фильмы: \n" + userDataProcessing();
+            {
+                userData.actor = "";
+                return "Такого актера в моем списке нет :(";
+            }
+            return "Тебе должны понравится эти фильмы:\n" + userDataProcessing();
         }
         return "Я не понял. Ответь по-другому";
     }
