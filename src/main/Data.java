@@ -21,18 +21,11 @@ class Data
             "фа", "фантастика"
     );
 
-//    public Data()
-//    {
-//        readDate();
-//    }
-
     public HashMap<String, ArrayList<String>> getGenres() { return genresType; }
 
     public HashMap<String, ArrayList<String>> getActors() {
         return actorsName;
     }
-
-//    public HashMap<String, ArrayList<String>> parssingGenre()
 
     public void parssingLine(String line)
     {
