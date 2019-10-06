@@ -21,10 +21,10 @@ class Data
             "фа", "фантастика"
     );
 
-    public Data()
-    {
-        readDate();
-    }
+//    public Data()
+//    {
+//        readDate();
+//    }
 
     public HashMap<String, ArrayList<String>> getGenres() { return genresType; }
 
@@ -32,7 +32,9 @@ class Data
         return actorsName;
     }
 
-    private void parssingLine(String line)
+//    public HashMap<String, ArrayList<String>> parssingGenre()
+
+    public void parssingLine(String line)
     {
         var split = line.split(";");
         var film = split[0];
@@ -55,7 +57,7 @@ class Data
         }
     }
 
-    private void readDate()
+    protected void readDate()
     {
         try {
             var fr = new FileReader("data.txt");

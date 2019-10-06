@@ -12,6 +12,7 @@ class Logic
     public Logic()
     {
         data = new Data();
+        data.readDate();
         userData = new UserData();
     }
 
