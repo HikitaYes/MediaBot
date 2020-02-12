@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import static main.Bot.write;
-
 class Data
 {
     private HashMap<String, ArrayList<String>> genresType = new HashMap<>();
@@ -18,7 +16,8 @@ class Data
             "д", "драма",
             "к", "комедия",
             "фэ", "фэнтези",
-            "фа", "фантастика"
+            "фа", "фантастика",
+            "и", "историческое кино"
     );
 
     public HashMap<String, ArrayList<String>> getGenres() { return genresType; }
@@ -67,7 +66,7 @@ class Data
             }
         } catch (FileNotFoundException e)
         {
-            write("Файл не найден");
+            System.out.println("Файл не найден");
         }
     }
 }
