@@ -1,30 +1,56 @@
 package main;
 import java.util.Scanner;
+
 import static main.Logic.*;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.api.methods.*;
 
-class Bot
+class Bot extends TelegramLongPollingBot
 {
-    private static Scanner in = new Scanner(System.in);
+    Logic logic;
 
-    public static void write(String text)
+    public Bot()
     {
-        System.out.println(text);
+        logic = new Logic();
     }
 
-    private static String read()
+    @Override
+    public void onUpdateReceived(Update update)
     {
-        return in.nextLine();
-    }
-
-    public void dialog()
-    {
-        var logic = new Logic();
-        write(logic.hello());
-        while (true)
+        var message = update.getMessage();
+        if (message != null && message.hasText())
         {
-            var userText = read();
-            var botReply = logic.answerProcessing(userText);
-            write(botReply);
+            var text = logic.answerProcessing(message.getText());
+            sendMsg(message, text);
         }
+    }
+
+    public void sendMsg(Message message, String str)
+    {
+        SendMessage send = new SendMessage();
+        send.enableMarkdown(true);
+        send.setChatId(message.getChatId().toString());
+        send.setText(str);
+        System.out.println(message.getText());
+        try {
+            execute(send);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public String getBotUsername() {
+        return "FilmChooser";
+    }
+
+    @Override
+    public String getBotToken() {
+        return "911382208:AAHSdDkeEMfOWum5QAecrzP1mhGfV67lG1Y";
     }
 }
