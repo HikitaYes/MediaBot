@@ -9,7 +9,7 @@ class Logic
 {
     public Data data; // must be public
     public UserData userData; // must be public
-    public Set<String> inlineKeyboardData = new HashSet<>();
+    public String[] inlineKeyboardData;
 
     public Logic(UserData userData)
     {
@@ -52,19 +52,18 @@ class Logic
     {
         System.out.println("text: " + text);
         if (text.equals("/start")) {
-            System.out.println(data.getGenres());
-            inlineKeyboardData = data.getGenres().keySet();
+            inlineKeyboardData = data.getGenres().keySet().toArray(String[]::new);
             return "Привет! Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
         }
         else if (text.equals("/help")) {
-            inlineKeyboardData = data.getGenres().keySet();
+            inlineKeyboardData = data.getGenres().keySet().toArray(String[]::new);
             return "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
         }
         if (userData.genre.equals(""))
         {
             if (data.getGenres().containsKey(text)) {
                 userData.genre = text;
-                inlineKeyboardData = data.getActors().keySet();
+                inlineKeyboardData = data.getActorsInGenre().get(text).toArray(String[]::new);
             }
             else
                 return "Такого жанра в моем списке нет :(";
@@ -72,8 +71,7 @@ class Logic
         }
         if (userData.actor.equals(""))
         {
-            inlineKeyboardData = new HashSet<>();
-            System.out.println(text + " " + data.getActors());
+            inlineKeyboardData = new String[0];
             if (data.getActors().containsKey(text)) {
                 userData.actor = text;
             }
@@ -90,9 +88,4 @@ class Logic
         }
         return "Я не понял. Ответь по-другому";
     }
-
-//    private createInlineKeyboardData()
-//    {
-//
-//    }
 }

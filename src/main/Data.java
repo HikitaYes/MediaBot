@@ -12,6 +12,7 @@ class Data
 {
     private HashMap<String, ArrayList<String>> genresType = new HashMap<>();
     private HashMap<String, ArrayList<String>> actorsName = new HashMap<>();
+    private HashMap<String, ArrayList<String>> actorsInGenre = new HashMap<>();
     private Map<String, String> genresFullName = Map.of(
             "д", "Драма",
             "к", "Комедия",
@@ -31,14 +32,20 @@ class Data
         return actorsName;
     }
 
+    public HashMap<String, ArrayList<String>> getActorsInGenre() {
+        return actorsInGenre;
+    }
+
     public void parssingLine(String line)
     {
         var split = line.split(";");
         var film = split[0];
         var genres = split[1];
+        var genreList = new ArrayList<String>();
         for (var genre : genres.split(" "))
         {
             var genreFullName = genresFullName.get(genre);
+            genreList.add(genreFullName);
             if (genresType.containsKey(genreFullName))
                 genresType.get(genreFullName).add(film);
             else
@@ -51,6 +58,15 @@ class Data
                 actorsName.get(actor).add(film);
             else
                 actorsName.put(actor, new ArrayList<String>(){{ add(film); }});
+            for (var genre : genreList)
+            {
+                if (actorsInGenre.containsKey(genre)) {
+                    if (!actorsInGenre.get(genre).contains(actor))
+                        actorsInGenre.get(genre).add(actor);
+                }
+                else
+                    actorsInGenre.put(genre, new ArrayList<String>() {{ add(actor); }});
+            }
         }
     }
 

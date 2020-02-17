@@ -68,7 +68,6 @@ class Bot extends TelegramLongPollingBot
 
         InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-//        System.out.println(logic.inlineKeyboardData);
         for (var data : logic.inlineKeyboardData)
         {
             List<InlineKeyboardButton> row = new ArrayList<>();
@@ -77,7 +76,6 @@ class Bot extends TelegramLongPollingBot
             button.setCallbackData(data);
             row.add(button);
             rowList.add(row);
-//            System.out.println(button);
         }
 
         inlineKeyboard.setKeyboard(rowList);
