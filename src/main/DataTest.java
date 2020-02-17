@@ -4,10 +4,6 @@ import com.google.inject.internal.asm.$Type;
 import org.junit.Test;
 import org.junit.Assert;
 
-import static main.Logic.*;
-import java.util.List;
-import java.util.stream.*;
-
 public class DataTest extends Logic { // наследование для тестировани
     private Data data = new Data();
 
@@ -23,15 +19,15 @@ public class DataTest extends Logic { // наследование для тес�
         Assert.assertEquals(film, actors.get("Морган Фриман").get(0));
 
         Assert.assertEquals(1, genres.size());
-        Assert.assertEquals(1, genres.get("драма").size());
-        Assert.assertEquals(film, genres.get("драма").get(0));
+        Assert.assertEquals(1, genres.get("Драма").size());
+        Assert.assertEquals(film, genres.get("Драма").get(0));
     }
 
     @Test
     public void TestLogic()
     {
         var userData = new UserData();
-        userData.genre = "драма";
+        userData.genre = "Драма";
         userData.actor = "Морган Фриман";
         var l = new Logic(userData);
         var result = l.userDataProcessing();
