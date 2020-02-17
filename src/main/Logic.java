@@ -1,12 +1,15 @@
 package main;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.*;
 
 class Logic
 {
-    private Data data;
-    private UserData userData;
+    public Data data; // must be public
+    public UserData userData; // must be public
+    public Set<String> inlineKeyboardData = new HashSet<>();
 
     public Logic(UserData userData)
     {
@@ -34,9 +37,9 @@ class Logic
                 .collect(Collectors.toList());
         userData.actor = "";
         userData.genre = "";
-        var result = "Таких фильмов в моем списке нет :(";
+        var result = "";
 
-        if (films.size() != 0)//stream
+        if (films.size() != 0) //stream
         {
             result = films.get(0);
             for (var i = 1; i < films.size(); i++)
@@ -47,27 +50,49 @@ class Logic
 
     protected String answerProcessing(String text)
     {
-        if (text.equals("/start"))
-            return "Привет! Я бот, который поможет тебе подобрать фильм по настроению. Для начала укажи свой любимый жанр";
-        else
-            if (text.equals("/help"))
-                return "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно указать свой любимый жанр и актера";
+        System.out.println("text: " + text);
+        if (text.equals("/start")) {
+            System.out.println(data.getGenres());
+            inlineKeyboardData = data.getGenres().keySet();
+            return "Привет! Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+        }
+        else if (text.equals("/help")) {
+            inlineKeyboardData = data.getGenres().keySet();
+            return "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+        }
         if (userData.genre.equals(""))
         {
-            if (data.getGenres().containsKey(text))
+            if (data.getGenres().containsKey(text)) {
                 userData.genre = text;
+                inlineKeyboardData = data.getActors().keySet();
+            }
             else
                 return "Такого жанра в моем списке нет :(";
-            return "Теперь укажи любимого актера";
+            return "Теперь выбери любимого актера";
         }
         if (userData.actor.equals(""))
         {
-            if (data.getActors().containsKey(text))
+            inlineKeyboardData = new HashSet<>();
+            System.out.println(text + " " + data.getActors());
+            if (data.getActors().containsKey(text)) {
                 userData.actor = text;
+            }
             else
                 return "Такого актера в моем списке нет :(";
-            return "Тебе должны понравится эти фильмы:\n" + userDataProcessing();
+            var films = userDataProcessing();
+            if (films.equals(""))
+            {
+                return "Таких фильмов в моем списке нет :(";
+            }
+            else{
+                return "Тебе должны понравится эти фильмы:\n" + films;
+            }
         }
         return "Я не понял. Ответь по-другому";
     }
+
+//    private createInlineKeyboardData()
+//    {
+//
+//    }
 }

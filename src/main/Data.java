@@ -13,11 +13,16 @@ class Data
     private HashMap<String, ArrayList<String>> genresType = new HashMap<>();
     private HashMap<String, ArrayList<String>> actorsName = new HashMap<>();
     private Map<String, String> genresFullName = Map.of(
-            "д", "драма",
-            "к", "комедия",
-            "фэ", "фэнтези",
-            "фа", "фантастика",
-            "и", "историческое кино"
+            "д", "Драма",
+            "к", "Комедия",
+            "де", "Детектив",
+            "фа", "Фантастика",
+            "и", "Историческое кино",
+            "т", "Триллер",
+            "кр", "Криминал",
+            "б", "Биография",
+            "м", "Мелодрама",
+            "п", "Приключение"
     );
 
     public HashMap<String, ArrayList<String>> getGenres() { return genresType; }
