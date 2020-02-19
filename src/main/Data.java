@@ -44,6 +44,8 @@ class Data
         var genreList = new ArrayList<String>();
         for (var genre : genres.split(" "))
         {
+            if (!genresFullName.containsKey(genre)) //!!!!!!!!!!!!!!!!!!!!!!!!!
+                continue;
             var genreFullName = genresFullName.get(genre);
             genreList.add(genreFullName);
             if (genresType.containsKey(genreFullName))

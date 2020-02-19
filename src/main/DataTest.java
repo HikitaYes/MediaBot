@@ -1,6 +1,4 @@
 package main;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.inject.internal.asm.$Type;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -51,6 +49,6 @@ public class DataTest extends Logic { // наследование для тес�
         userData.actor = "Морган Фриман";
         var l = new Logic(userData);
         var result = l.userDataProcessing();
-        Assert.assertEquals("\uFEFFПобег из Шоушенка, Брюс Всемогущий, Бен-Гур", result);
+        Assert.assertEquals("\uFEFFПобег из Шоушенка, Брюс Всемогущий, Бен-Гур, Темный рыцарь, Семь", result);
     }
 }

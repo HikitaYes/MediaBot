@@ -1,15 +1,13 @@
 package main;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.*;
 
 class Logic
 {
-    public Data data; // must be public
-    public UserData userData; // must be public
+    public Data data;
+    public UserData userData;
     public String[] inlineKeyboardData;
+    private boolean isChoosingProcess = false;
 
     public Logic(UserData userData)
     {
@@ -50,42 +48,37 @@ class Logic
 
     protected String answerProcessing(String text)
     {
-        System.out.println("text: " + text);
-        if (text.equals("/start")) {
-            inlineKeyboardData = data.getGenres().keySet().toArray(String[]::new);
-            return "Привет! Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
-        }
-        else if (text.equals("/help")) {
-            inlineKeyboardData = data.getGenres().keySet().toArray(String[]::new);
-            return "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
-        }
-        if (userData.genre.equals(""))
+        switch (text)
         {
-            if (data.getGenres().containsKey(text)) {
-                userData.genre = text;
-                inlineKeyboardData = data.getActorsInGenre().get(text).toArray(String[]::new);
-            }
-            else
-                return "Такого жанра в моем списке нет :(";
-            return "Теперь выбери любимого актера";
+            case "/start":
+                return "Привет! Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+            case "Помощь":
+                return "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+            case "Подобрать фильм":
+                isChoosingProcess = true;
+                inlineKeyboardData = data.getGenres().keySet().toArray(String[]::new);
+                userData.genre = "";
+                userData.actor = "";
+                return "Выбери свой любимый жанр";
+            default:
+                if (isChoosingProcess) {
+                    if (userData.genre.equals("")) {
+                        userData.genre = text;
+                        inlineKeyboardData = data.getActorsInGenre().get(text).toArray(String[]::new);
+                        return "Теперь выбери своего любимого актера";
+                    } else { // обработка актеров
+                        isChoosingProcess = false;
+                        inlineKeyboardData = null;
+                        userData.actor = text;
+
+                        var films = userDataProcessing();
+                        if (films.split(",").length == 1)
+                            return "Тебе должен понравится фильм \"" + films + "\"";
+                        else
+                            return "Тебе должны понравится эти фильмы:\n" + films;
+                    }
+                }
+                else return "Чтобы подобрать фильм, нажми \"Подобрать фильм\"";
         }
-        if (userData.actor.equals(""))
-        {
-            inlineKeyboardData = new String[0];
-            if (data.getActors().containsKey(text)) {
-                userData.actor = text;
-            }
-            else
-                return "Такого актера в моем списке нет :(";
-            var films = userDataProcessing();
-            if (films.equals(""))
-            {
-                return "Таких фильмов в моем списке нет :(";
-            }
-            else{
-                return "Тебе должны понравится эти фильмы:\n" + films;
-            }
-        }
-        return "Я не понял. Ответь по-другому";
     }
 }
