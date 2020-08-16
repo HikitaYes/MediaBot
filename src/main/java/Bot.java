@@ -1,5 +1,13 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.*;
@@ -91,6 +99,17 @@ class Bot extends TelegramLongPollingBot
 
     @Override
     public String getBotToken() {
-        return "911382208:AAHSdDkeEMfOWum5QAecrzP1mhGfV67lG1Y";
+        Properties properties = new Properties();
+        String tokenBot = null;
+        try (InputStream is = this.getClass().getResourceAsStream("config.properties")) {
+            properties.load(is);
+            tokenBot = properties.getProperty("tokenBot");
+        }
+        catch (IOException e)
+        {
+            System.out.println("Ошибка: не существует файла config.properties");
+            e.printStackTrace();
+        }
+        return tokenBot;
     }
 }
