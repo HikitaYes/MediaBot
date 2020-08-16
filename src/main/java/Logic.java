@@ -1,3 +1,5 @@
+import org.telegram.telegrambots.meta.api.objects.User;
+
 import java.util.List;
 import java.util.stream.*;
 
@@ -17,20 +19,16 @@ class Logic
 
     public Logic()
     {
-        data = new Data();
-        data.readDate();
-        userData = new UserData();
+        this(new UserData());
     }
 
     protected String userDataProcessing()
     {
-        List<String> filmsByGenre;
-        List<String> filmsByActors;
-        filmsByGenre = data.getGenres().get(userData.genre);
-        filmsByActors = data.getActors().get(userData.actor);
+        List<String> filmsByGenre = data.getGenres().get(userData.genre);
+        List<String> filmsByActors = data.getActors().get(userData.actor);
         // вместо filmsByGenre.retainAll(filmsByActors); используем stream
         List<String> films = filmsByGenre.stream()
-                .filter(filmsByActors::contains) // = (film -> filmsByActors.contains(film)
+                .filter(filmsByActors::contains)
                 .collect(Collectors.toList());
         userData.actor = "";
         userData.genre = "";
@@ -47,12 +45,13 @@ class Logic
 
     protected String answerProcessing(String text)
     {
+        String helpMessage = "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
         switch (text)
         {
             case "/start":
-                return "Привет! Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+                return String.format("Привет! %s", helpMessage);
             case "Помощь":
-                return "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+                return helpMessage;
             case "Подобрать фильм":
                 isChoosingProcess = true;
                 inlineKeyboardData = data.getGenres().keySet().toArray(String[]::new);
@@ -72,9 +71,11 @@ class Logic
 
                         var films = userDataProcessing();
                         if (films.split(",").length == 1)
-                            return "Тебе должен понравится фильм \"" + films + "\"";
+//                            return "Тебе должен понравится фильм \"" + films + "\"";
+                            return String.format("Тебе должен понравится фильм \"%s\"", films);
                         else
-                            return "Тебе должны понравится эти фильмы:\n" + films;
+//                            return "Тебе должны понравится эти фильмы:\n" + films;
+                            return String.format("Тебе должны понравится эти фильмы:%n%s", films);
                     }
                 }
                 else return "Чтобы подобрать фильм, нажми \"Подобрать фильм\"";

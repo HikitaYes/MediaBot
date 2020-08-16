@@ -4,7 +4,7 @@ import org.junit.Assert;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DataTest extends Logic { // наследование для тестировани
+public class DataTest extends Logic { // наследование для тестирования
     private Data data = new Data();
 
     @Test
