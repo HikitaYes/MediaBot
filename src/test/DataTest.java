@@ -46,8 +46,10 @@ public class DataTest extends Logic { // наследование для тес�
         var userData = new UserData();
         userData.genre = "Драма";
         userData.actor = "Морган Фриман";
-        var l = new Logic(userData);
-        var result = l.userDataProcessing();
+        var logic = new Logic(userData);
+        var result = logic.userDataProcessing();
+
+        System.out.println(Arrays.toString(logic.data.getActorsInGenre().get("Драма").toArray(String[]::new)));
         Assert.assertEquals("\uFEFFПобег из Шоушенка, Брюс Всемогущий, Бен-Гур, Темный рыцарь, Семь", result);
     }
 }

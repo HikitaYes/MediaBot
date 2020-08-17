@@ -26,21 +26,12 @@ class Logic
     {
         List<String> filmsByGenre = data.getGenres().get(userData.genre);
         List<String> filmsByActors = data.getActors().get(userData.actor);
-        // вместо filmsByGenre.retainAll(filmsByActors); используем stream
         List<String> films = filmsByGenre.stream()
                 .filter(filmsByActors::contains)
                 .collect(Collectors.toList());
         userData.actor = "";
         userData.genre = "";
-        var result = "";
-
-        if (films.size() != 0) //stream
-        {
-            result = films.get(0);
-            for (var i = 1; i < films.size(); i++)
-                result += ", " + films.get(i);
-        }
-        return result;
+        return String.join(", ", films);
     }
 
     protected String answerProcessing(String text)
@@ -63,6 +54,7 @@ class Logic
                     if (userData.genre.equals("")) {
                         userData.genre = text;
                         inlineKeyboardData = data.getActorsInGenre().get(text).toArray(String[]::new);
+
                         return "Теперь выбери своего любимого актера";
                     } else { // обработка актеров
                         isChoosingProcess = false;
@@ -71,10 +63,8 @@ class Logic
 
                         var films = userDataProcessing();
                         if (films.split(",").length == 1)
-//                            return "Тебе должен понравится фильм \"" + films + "\"";
                             return String.format("Тебе должен понравится фильм \"%s\"", films);
                         else
-//                            return "Тебе должны понравится эти фильмы:\n" + films;
                             return String.format("Тебе должны понравится эти фильмы:%n%s", films);
                     }
                 }
