@@ -34,9 +34,9 @@ class Logic
         return String.join(", ", films);
     }
 
-    protected String answerProcessing(String text)
+    protected String getAnswer(String text)
     {
-        String helpMessage = "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+        var helpMessage = "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
         switch (text)
         {
             case "/start":

@@ -31,20 +31,20 @@ class Bot extends TelegramLongPollingBot
         if (update.hasMessage()) {
             var message = update.getMessage();
             if (message != null && message.hasText()) {
-                var text = logic.answerProcessing(message.getText());
-                sendMsg(message.getChatId().toString(), text);
+                var answer = logic.getAnswer(message.getText());
+                sendMsg(message.getChatId().toString(), answer);
             }
         } else if (update.hasCallbackQuery())
         {
             var data = update.getCallbackQuery().getData();
-            var text = logic.answerProcessing(data);
-            sendMsg(update.getCallbackQuery().getMessage().getChatId().toString(), text);
+            var answer = logic.getAnswer(data);
+            sendMsg(update.getCallbackQuery().getMessage().getChatId().toString(), answer);
         }
     }
 
     public void sendMsg(String chatId, String str)
     {
-        SendMessage send = new SendMessage();
+        var send = new SendMessage();
         send.enableMarkdown(true);
         send.setChatId(chatId);
         send.setText(str);
@@ -60,7 +60,7 @@ class Bot extends TelegramLongPollingBot
 
     public void setInlineKeyboard(SendMessage send)
     {
-        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
+        var inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         for (var data : logic.inlineKeyboardData)
         {
@@ -77,13 +77,13 @@ class Bot extends TelegramLongPollingBot
 
     public void setKeyboardButtons(SendMessage send)
     {
-        ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
+        var replyKeyboard = new ReplyKeyboardMarkup();
         replyKeyboard.setSelective(true);
         replyKeyboard.setResizeKeyboard(true);
         replyKeyboard.setOneTimeKeyboard(false);
 
         List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
+        var row = new KeyboardRow();
         row.add(new KeyboardButton("Помощь"));
         row.add(new KeyboardButton("Подобрать фильм"));
         keyboard.add(row);
@@ -99,7 +99,7 @@ class Bot extends TelegramLongPollingBot
 
     @Override
     public String getBotToken() {
-        Properties properties = new Properties();
+        var properties = new Properties();
         String tokenBot = null;
         try (InputStream is = this.getClass().getResourceAsStream("config.properties")) {
             properties.load(is);
