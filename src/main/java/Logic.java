@@ -1,12 +1,11 @@
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.*;
 
 class Logic
 {
-    public Data data;
-    public UserData userData;
-    public String[] inlineKeyboardData;
-    private boolean isChoosingProcess = false;
+    private Data data;
+    private UserData userData;
 
     public Logic(UserData userData)
     {
@@ -17,67 +16,60 @@ class Logic
 
     public Logic()
     {
-        data = new Data();
-        data.readDate();
-        userData = new UserData();
+        this(new UserData());
     }
 
-    protected String userDataProcessing()
+    protected List<String> getFilms()
     {
-        List<String> filmsByGenre;
-        List<String> filmsByActors;
-        filmsByGenre = data.getGenres().get(userData.genre);
-        filmsByActors = data.getActors().get(userData.actor);
-        // вместо filmsByGenre.retainAll(filmsByActors); используем stream
-        List<String> films = filmsByGenre.stream()
-                .filter(filmsByActors::contains) // = (film -> filmsByActors.contains(film)
+        List<String> filmsByGenre = data.getGenres().get(userData.getGenre());
+        List<String> filmsByActors = data.getActors().get(userData.getActor());
+        return filmsByGenre.stream()
+                .filter(filmsByActors::contains)
                 .collect(Collectors.toList());
-        userData.actor = "";
-        userData.genre = "";
-        var result = "";
-
-        if (films.size() != 0) //stream
-        {
-            result = films.get(0);
-            for (var i = 1; i < films.size(); i++)
-                result += ", " + films.get(i);
-        }
-        return result;
     }
 
-    protected String answerProcessing(String text)
+    protected AnswerData getAnswer(String text)
     {
+        var helpMessage = "Я бот, который поможет тебе подобрать фильм. Тебе нужно выбрать свой любимый жанр и актера";
         switch (text)
         {
             case "/start":
-                return "Привет! Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+                return new AnswerData(String.format("Привет! %s", helpMessage));
             case "Помощь":
-                return "Я бот, который поможет тебе подобрать фильм по настроению. Тебе нужно выбрать свой любимый жанр и актера";
+                return new AnswerData(helpMessage);
             case "Подобрать фильм":
-                isChoosingProcess = true;
-                inlineKeyboardData = data.getGenres().keySet().toArray(String[]::new);
-                userData.genre = "";
-                userData.actor = "";
-                return "Выбери свой любимый жанр";
+                Collection<String> buttons = data.getGenres().keySet();
+                userData = new UserData();
+                return new AnswerData("Выбери свой любимый жанр", buttons);
             default:
-                if (isChoosingProcess) {
-                    if (userData.genre.equals("")) {
-                        userData.genre = text;
-                        inlineKeyboardData = data.getActorsInGenre().get(text).toArray(String[]::new);
-                        return "Теперь выбери своего любимого актера";
-                    } else { // обработка актеров
-                        isChoosingProcess = false;
-                        inlineKeyboardData = null;
-                        userData.actor = text;
+                var genre = userData.getGenre();
+                var actor = userData.getActor();
 
-                        var films = userDataProcessing();
-                        if (films.split(",").length == 1)
-                            return "Тебе должен понравится фильм \"" + films + "\"";
-                        else
-                            return "Тебе должны понравится эти фильмы:\n" + films;
+                if (genre.isEmpty()) {
+                    if (data.getGenres().containsKey(text)) {
+                        userData.setGenre(text);
+
+                        buttons = data.getActorsInGenre(text).stream().sorted().collect(Collectors.toList());
+                        return new AnswerData("Теперь выбери своего любимого актера", buttons);
+                    } else {
+                        return new AnswerData("Такого жанра в моем списке нет");
                     }
-                }
-                else return "Чтобы подобрать фильм, нажми \"Подобрать фильм\"";
+                } else if (actor.isEmpty()) {
+                    if (data.getActors().containsKey(text)) {
+                        userData.setActor(text);
+
+                        var films = getFilms();
+                        if (films.size() == 1) {
+                            return new AnswerData(String.format("Тебе должен понравится фильм \"%s\"", films));
+                        } else {
+                            return new AnswerData(String.format(
+                                    "Тебе должны понравится эти фильмы:%n%s",
+                                    String.join(", ", films)));
+                        }
+                    } else {
+                        return new AnswerData("Такого актера в моем списке нет");
+                    }
+                } else return new AnswerData("Чтобы подобрать фильм, нажми \"Подобрать фильм\"");
         }
     }
 }

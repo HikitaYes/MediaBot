@@ -1,11 +1,7 @@
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -20,10 +16,7 @@ class Bot extends TelegramLongPollingBot
 {
     Logic logic;
 
-    public Bot()
-    {
-        logic = new Logic();
-    }
+    public Bot() { logic = new Logic(); }
 
     @Override
     public void onUpdateReceived(Update update)
@@ -31,38 +24,43 @@ class Bot extends TelegramLongPollingBot
         if (update.hasMessage()) {
             var message = update.getMessage();
             if (message != null && message.hasText()) {
-                var text = logic.answerProcessing(message.getText());
-                sendMsg(message.getChatId().toString(), text);
+                var answer = logic.getAnswer(message.getText());
+//                System.out.println(message.getFrom().getFirstName() + ": " + message.getText());
+                sendMessage(message.getChatId().toString(), answer);
             }
+
         } else if (update.hasCallbackQuery())
         {
             var data = update.getCallbackQuery().getData();
-            var text = logic.answerProcessing(data);
-            sendMsg(update.getCallbackQuery().getMessage().getChatId().toString(), text);
+//            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + ": " + data);
+            var answer = logic.getAnswer(data);
+            sendMessage(update.getCallbackQuery().getMessage().getChatId().toString(), answer);
         }
     }
 
-    public void sendMsg(String chatId, String str)
+    public void sendMessage(String chatId, AnswerData answer)
     {
-        SendMessage send = new SendMessage();
+        var send = new SendMessage();
         send.enableMarkdown(true);
         send.setChatId(chatId);
-        send.setText(str);
-        if (logic.inlineKeyboardData == null)
+        send.setText(answer.getText());
+        var buttons = answer.getButtons();
+        if (buttons == null)
             setKeyboardButtons(send);
-        else setInlineKeyboard(send);
+        else setInlineKeyboard(send, buttons);
         try {
             execute(send);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+//        System.out.println("Bot: " + answer.getText());
     }
 
-    public void setInlineKeyboard(SendMessage send)
+    public void setInlineKeyboard(SendMessage send, Collection<String> buttons)
     {
-        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
+        var inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        for (var data : logic.inlineKeyboardData)
+        for (var data : buttons)
         {
             List<InlineKeyboardButton> row = new ArrayList<>();
             var button = new InlineKeyboardButton();
@@ -77,13 +75,13 @@ class Bot extends TelegramLongPollingBot
 
     public void setKeyboardButtons(SendMessage send)
     {
-        ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
+        var replyKeyboard = new ReplyKeyboardMarkup();
         replyKeyboard.setSelective(true);
         replyKeyboard.setResizeKeyboard(true);
         replyKeyboard.setOneTimeKeyboard(false);
 
         List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
+        var row = new KeyboardRow();
         row.add(new KeyboardButton("Помощь"));
         row.add(new KeyboardButton("Подобрать фильм"));
         keyboard.add(row);
@@ -99,7 +97,7 @@ class Bot extends TelegramLongPollingBot
 
     @Override
     public String getBotToken() {
-        Properties properties = new Properties();
+        var properties = new Properties();
         String tokenBot = null;
         try (InputStream is = this.getClass().getResourceAsStream("config.properties")) {
             properties.load(is);

@@ -1,10 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 class Data
 {
@@ -30,8 +27,8 @@ class Data
         return actorsName;
     }
 
-    public HashMap<String, ArrayList<String>> getActorsInGenre() {
-        return actorsInGenre;
+    public Collection<String> getActorsInGenre(String genre) {
+        return actorsInGenre.get(genre);
     }
 
     public void parssingLine(String line)
@@ -42,14 +39,14 @@ class Data
         var genreList = new ArrayList<String>();
         for (var genre : genres.split(" "))
         {
-            if (!genresFullName.containsKey(genre)) //!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (!genresFullName.containsKey(genre))
                 continue;
             var genreFullName = genresFullName.get(genre);
             genreList.add(genreFullName);
             if (genresType.containsKey(genreFullName))
                 genresType.get(genreFullName).add(film);
             else
-                genresType.put(genreFullName, new ArrayList<String>(){{ add(film); }});
+                genresType.put(genreFullName, new ArrayList<>(){{ add(film); }});
         }
         var actors = split[2];
         for (var actor : actors.split(","))
@@ -57,15 +54,15 @@ class Data
             if (actorsName.containsKey(actor))
                 actorsName.get(actor).add(film);
             else
-                actorsName.put(actor, new ArrayList<String>(){{ add(film); }});
+                actorsName.put(actor, new ArrayList<>(){{ add(film); }});
             for (var genre : genreList)
             {
                 if (actorsInGenre.containsKey(genre)) {
                     if (!actorsInGenre.get(genre).contains(actor))
                         actorsInGenre.get(genre).add(actor);
                 }
-                else
-                    actorsInGenre.put(genre, new ArrayList<String>() {{ add(actor); }});
+//                else actorsInGenre.put(genre, new ArrayList<>() {{ add(actor); }});
+                actorsInGenre.computeIfAbsent(genre, key -> new ArrayList<>() {{ add(actor); }});
             }
         }
     }
