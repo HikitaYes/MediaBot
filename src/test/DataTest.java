@@ -1,20 +1,19 @@
 import org.junit.Test;
 import org.junit.Assert;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DataTest extends Logic { // наследование для тестирования
-    private Data data = new Data();
 
     @Test
     public void TestData() {
+        var data = new Data();
         data.parssingLine("Побег из Шоушенка;д ;Морган Фриман");
         var films = new ArrayList<String>() {{ add("Побег из Шоушенка"); }};
         var actorsReal = new ArrayList<String>() {{ add("Морган Фриман"); }};
         var actors = data.getActors();
         var genres = data.getGenres();
-        var actorsInGenre = data.getActorsInGenre();
+        var actorsInGenre = data.getActorsInGenre("Драма");
 
         Assert.assertEquals(1, actors.size());
         Assert.assertEquals(1, actors.get("Морган Фриман").size());
@@ -25,18 +24,16 @@ public class DataTest extends Logic { // наследование для тес�
         Assert.assertEquals(films.get(0), genres.get("Драма").get(0));
 
         Assert.assertEquals(1, actorsInGenre.size());
-        Assert.assertEquals(1, actorsInGenre.get("Драма").size());
-        Assert.assertEquals(actorsReal.get(0), actorsInGenre.get("Драма").get(0));
+        Assert.assertEquals(1, actorsInGenre.size());
+        Assert.assertEquals(actorsReal.get(0), actorsInGenre.iterator().next());
 
         data.parssingLine("Бойцовский клуб;т д кр;Эдвард Нортон,Брэд Питт,Хелена Бонем Картер");
         films.add("Бойцовский клуб");
 
         genres = data.getGenres();
-        actorsInGenre = data.getActorsInGenre();
 
-        Assert.assertEquals(Arrays.asList("Морган Фриман", "Эдвард Нортон", "Брэд Питт", "Хелена Бонем Картер"), actorsInGenre.get("Драма"));
-        Assert.assertEquals(Arrays.asList("Эдвард Нортон", "Брэд Питт", "Хелена Бонем Картер"), actorsInGenre.get("Триллер"));
-
+        Assert.assertEquals(Arrays.asList("Морган Фриман", "Эдвард Нортон", "Брэд Питт", "Хелена Бонем Картер"), data.getActorsInGenre("Драма"));
+        Assert.assertEquals(Arrays.asList("Эдвард Нортон", "Брэд Питт", "Хелена Бонем Картер"), data.getActorsInGenre("Триллер"));
         Assert.assertEquals(films, genres.get("Драма"));
     }
 
@@ -44,12 +41,10 @@ public class DataTest extends Logic { // наследование для тес�
     public void TestLogic()
     {
         var userData = new UserData();
-        userData.genre = "Драма";
-        userData.actor = "Морган Фриман";
+        userData.setGenre("Драма");
+        userData.setActor("Морган Фриман");
         var logic = new Logic(userData);
-        var result = logic.userDataProcessing();
-
-        System.out.println(Arrays.toString(logic.data.getActorsInGenre().get("Драма").toArray(String[]::new)));
+        var result = String.join(", ", logic.getFilms());
         Assert.assertEquals("\uFEFFПобег из Шоушенка, Брюс Всемогущий, Бен-Гур, Темный рыцарь, Семь", result);
     }
 }

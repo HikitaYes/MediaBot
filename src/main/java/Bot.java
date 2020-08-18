@@ -1,11 +1,7 @@
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -20,10 +16,7 @@ class Bot extends TelegramLongPollingBot
 {
     Logic logic;
 
-    public Bot()
-    {
-        logic = new Logic();
-    }
+    public Bot() { logic = new Logic(); }
 
     @Override
     public void onUpdateReceived(Update update)
@@ -32,37 +25,42 @@ class Bot extends TelegramLongPollingBot
             var message = update.getMessage();
             if (message != null && message.hasText()) {
                 var answer = logic.getAnswer(message.getText());
-                sendMsg(message.getChatId().toString(), answer);
+//                System.out.println(message.getFrom().getFirstName() + ": " + message.getText());
+                sendMessage(message.getChatId().toString(), answer);
             }
+
         } else if (update.hasCallbackQuery())
         {
             var data = update.getCallbackQuery().getData();
+//            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + ": " + data);
             var answer = logic.getAnswer(data);
-            sendMsg(update.getCallbackQuery().getMessage().getChatId().toString(), answer);
+            sendMessage(update.getCallbackQuery().getMessage().getChatId().toString(), answer);
         }
     }
 
-    public void sendMsg(String chatId, String str)
+    public void sendMessage(String chatId, AnswerData answer)
     {
         var send = new SendMessage();
         send.enableMarkdown(true);
         send.setChatId(chatId);
-        send.setText(str);
-        if (logic.inlineKeyboardData == null)
+        send.setText(answer.getText());
+        var buttons = answer.getButtons();
+        if (buttons == null)
             setKeyboardButtons(send);
-        else setInlineKeyboard(send);
+        else setInlineKeyboard(send, buttons);
         try {
             execute(send);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+//        System.out.println("Bot: " + answer.getText());
     }
 
-    public void setInlineKeyboard(SendMessage send)
+    public void setInlineKeyboard(SendMessage send, Collection<String> buttons)
     {
         var inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        for (var data : logic.inlineKeyboardData)
+        for (var data : buttons)
         {
             List<InlineKeyboardButton> row = new ArrayList<>();
             var button = new InlineKeyboardButton();
