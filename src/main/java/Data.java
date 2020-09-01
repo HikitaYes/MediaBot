@@ -46,7 +46,8 @@ class Data
             if (genresType.containsKey(genreFullName))
                 genresType.get(genreFullName).add(film);
             else
-                genresType.put(genreFullName, new ArrayList<>(){{ add(film); }});
+                genresType.put(genreFullName, new ArrayList<>(Arrays.asList(film)));
+
         }
         var actors = split[2];
         for (var actor : actors.split(","))
@@ -54,15 +55,14 @@ class Data
             if (actorsName.containsKey(actor))
                 actorsName.get(actor).add(film);
             else
-                actorsName.put(actor, new ArrayList<>(){{ add(film); }});
+                actorsName.put(actor, new ArrayList<>(Arrays.asList(film)));
             for (var genre : genreList)
             {
                 if (actorsInGenre.containsKey(genre)) {
                     if (!actorsInGenre.get(genre).contains(actor))
                         actorsInGenre.get(genre).add(actor);
                 }
-//                else actorsInGenre.put(genre, new ArrayList<>() {{ add(actor); }});
-                actorsInGenre.computeIfAbsent(genre, key -> new ArrayList<>() {{ add(actor); }});
+                actorsInGenre.computeIfAbsent(genre, key -> new ArrayList<>(Arrays.asList(actor)));
             }
         }
     }

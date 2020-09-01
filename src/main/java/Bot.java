@@ -25,14 +25,14 @@ class Bot extends TelegramLongPollingBot
             var message = update.getMessage();
             if (message != null && message.hasText()) {
                 var answer = logic.getAnswer(message.getText());
-//                System.out.println(message.getFrom().getFirstName() + ": " + message.getText());
+                System.out.println(message.getFrom().getFirstName() + ": " + message.getText());
                 sendMessage(message.getChatId().toString(), answer);
             }
 
         } else if (update.hasCallbackQuery())
         {
             var data = update.getCallbackQuery().getData();
-//            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + ": " + data);
+            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + ": " + data);
             var answer = logic.getAnswer(data);
             sendMessage(update.getCallbackQuery().getMessage().getChatId().toString(), answer);
         }
@@ -53,7 +53,7 @@ class Bot extends TelegramLongPollingBot
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-//        System.out.println("Bot: " + answer.getText());
+        System.out.println("Bot: " + answer.getText());
     }
 
     public void setInlineKeyboard(SendMessage send, Collection<String> buttons)
