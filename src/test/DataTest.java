@@ -43,8 +43,8 @@ public class DataTest extends Logic { // наследование для тес�
         var userData = new UserData();
         userData.setGenre("Драма");
         userData.setActor("Морган Фриман");
-        var logic = new Logic(userData);
-        var result = String.join(", ", logic.getFilms());
+        var logic = new Logic();
+        var result = String.join(", ", logic.getFilms(userData));
         Assert.assertEquals("\uFEFFПобег из Шоушенка, Брюс Всемогущий, Бен-Гур, Темный рыцарь, Семь", result);
     }
 }
