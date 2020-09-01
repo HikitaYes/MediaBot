@@ -26,7 +26,7 @@ class Bot extends TelegramLongPollingBot
             if (message != null && message.hasText()) {
                 var chatId = message.getChatId();
                 var answer = logic.getAnswer(message.getText(), chatId);
-//                System.out.println(message.getFrom().getFirstName() + " - " + chatId + ": " + message.getText());
+                System.out.println(message.getFrom().getFirstName() + " - " + chatId + ": " + message.getText());
                 sendMessage(chatId.toString(), answer);
             }
 
@@ -34,7 +34,7 @@ class Bot extends TelegramLongPollingBot
         {
             var data = update.getCallbackQuery().getData();
             var chatId = update.getCallbackQuery().getMessage().getChatId();
-//            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + " - " + chatId + ": " + data);
+            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + " - " + chatId + ": " + data);
             var answer = logic.getAnswer(data, chatId);
             sendMessage(chatId.toString(), answer);
         }
@@ -47,15 +47,16 @@ class Bot extends TelegramLongPollingBot
         send.setChatId(chatId);
         send.setText(answer.getText());
         var buttons = answer.getButtons();
-        if (buttons == null)
+        if (buttons == null) {
             setKeyboardButtons(send);
+        }
         else setInlineKeyboard(send, buttons);
         try {
             execute(send);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-//        System.out.println("Bot: " + answer.getText());
+        System.out.println("Bot: " + answer.getText());
     }
 
     public void setInlineKeyboard(SendMessage send, Collection<String> buttons)
@@ -78,7 +79,6 @@ class Bot extends TelegramLongPollingBot
     public void setKeyboardButtons(SendMessage send)
     {
         var replyKeyboard = new ReplyKeyboardMarkup();
-        replyKeyboard.setSelective(true);
         replyKeyboard.setResizeKeyboard(true);
         replyKeyboard.setOneTimeKeyboard(false);
 
