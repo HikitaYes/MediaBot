@@ -1,25 +1,20 @@
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.*;
 
 class Logic
 {
     private Data data;
-    private UserData userData;
-
-    public Logic(UserData userData)
-    {
-        data = new Data();
-        data.readDate();
-        this.userData = userData;
-    }
+    private HashMap<Long, UserData> chatIdData = new HashMap<>();
 
     public Logic()
     {
-        this(new UserData());
+        data = new Data();
+        data.readDate();
     }
 
-    protected List<String> getFilms()
+    protected List<String> getFilms(UserData userData)
     {
         List<String> filmsByGenre = data.getGenres().get(userData.getGenre());
         List<String> filmsByActors = data.getActors().get(userData.getActor());
@@ -28,9 +23,10 @@ class Logic
                 .collect(Collectors.toList());
     }
 
-    protected AnswerData getAnswer(String text)
+    protected AnswerData getAnswer(String text, Long id)
     {
         var helpMessage = "Я бот, который поможет тебе подобрать фильм. Тебе нужно выбрать свой любимый жанр и актера";
+        var sorryMessage = "Чтобы подобрать фильм, нажми \"Подобрать фильм\"";
         switch (text)
         {
             case "/start":
@@ -39,9 +35,13 @@ class Logic
                 return new AnswerData(helpMessage);
             case "Подобрать фильм":
                 Collection<String> buttons = data.getGenres().keySet();
-                userData = new UserData();
+                chatIdData.put(id, new UserData());
                 return new AnswerData("Выбери свой любимый жанр", buttons);
             default:
+                if (!chatIdData.containsKey(id)) {
+                    return new AnswerData(sorryMessage);
+                }
+                var userData = chatIdData.get(id);
                 var genre = userData.getGenre();
                 var actor = userData.getActor();
 
@@ -58,7 +58,7 @@ class Logic
                     if (data.getActors().containsKey(text)) {
                         userData.setActor(text);
 
-                        var films = getFilms();
+                        var films = getFilms(userData);
                         if (films.size() == 1) {
                             return new AnswerData(String.format("Тебе должен понравится фильм \"%s\"", films));
                         } else {
@@ -69,7 +69,7 @@ class Logic
                     } else {
                         return new AnswerData("Такого актера в моем списке нет");
                     }
-                } else return new AnswerData("Чтобы подобрать фильм, нажми \"Подобрать фильм\"");
+                } else return new AnswerData(sorryMessage);
         }
     }
 }

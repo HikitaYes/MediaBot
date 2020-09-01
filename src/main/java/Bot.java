@@ -24,17 +24,19 @@ class Bot extends TelegramLongPollingBot
         if (update.hasMessage()) {
             var message = update.getMessage();
             if (message != null && message.hasText()) {
-                var answer = logic.getAnswer(message.getText());
-//                System.out.println(message.getFrom().getFirstName() + ": " + message.getText());
-                sendMessage(message.getChatId().toString(), answer);
+                var chatId = message.getChatId();
+                var answer = logic.getAnswer(message.getText(), chatId);
+                System.out.println(message.getFrom().getFirstName() + " - " + chatId + ": " + message.getText());
+                sendMessage(chatId.toString(), answer);
             }
 
         } else if (update.hasCallbackQuery())
         {
             var data = update.getCallbackQuery().getData();
-//            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + ": " + data);
-            var answer = logic.getAnswer(data);
-            sendMessage(update.getCallbackQuery().getMessage().getChatId().toString(), answer);
+            var chatId = update.getCallbackQuery().getMessage().getChatId();
+            System.out.println(update.getCallbackQuery().getFrom().getFirstName() + " - " + chatId + ": " + data);
+            var answer = logic.getAnswer(data, chatId);
+            sendMessage(chatId.toString(), answer);
         }
     }
 
@@ -45,15 +47,16 @@ class Bot extends TelegramLongPollingBot
         send.setChatId(chatId);
         send.setText(answer.getText());
         var buttons = answer.getButtons();
-        if (buttons == null)
+        if (buttons == null) {
             setKeyboardButtons(send);
+        }
         else setInlineKeyboard(send, buttons);
         try {
             execute(send);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-//        System.out.println("Bot: " + answer.getText());
+        System.out.println("Bot: " + answer.getText());
     }
 
     public void setInlineKeyboard(SendMessage send, Collection<String> buttons)
@@ -76,7 +79,6 @@ class Bot extends TelegramLongPollingBot
     public void setKeyboardButtons(SendMessage send)
     {
         var replyKeyboard = new ReplyKeyboardMarkup();
-        replyKeyboard.setSelective(true);
         replyKeyboard.setResizeKeyboard(true);
         replyKeyboard.setOneTimeKeyboard(false);
 

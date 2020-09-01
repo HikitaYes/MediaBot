@@ -4,7 +4,7 @@ public class UserData
     private String actor;
 
     public UserData() {
-        genre = "";
+        genre = ""; // try with null
         actor = "";
     }
 
