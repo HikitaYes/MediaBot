@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,11 @@ class Logic
     {
         data = new Data();
         data.readDate();
+    }
+
+    protected Collection<String> getButtons()
+    {
+        return Arrays.asList("Помощь", "Подобрать фильм");
     }
 
     protected List<String> getFilms(UserData userData)
