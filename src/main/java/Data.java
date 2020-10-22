@@ -5,9 +5,9 @@ import java.util.*;
 
 class Data
 {
-    private HashMap<String, ArrayList<String>> genresType = new HashMap<>();
-    private HashMap<String, ArrayList<String>> actorsName = new HashMap<>();
-    private HashMap<String, ArrayList<String>> actorsInGenre = new HashMap<>();
+    private Map<String, List<String>> genresType = new HashMap<>();
+    private Map<String, List<String>> actorsName = new HashMap<>();
+    private Map<String, List<String>> actorsInGenre = new HashMap<>();
     private Map<String, String> genresFullName = Map.of(
             "д", "Драма",
             "к", "Комедия",
@@ -20,10 +20,11 @@ class Data
             "м", "Мелодрама",
             "п", "Приключение"
     );
+            
 
-    public HashMap<String, ArrayList<String>> getGenres() { return genresType; }
+    public Map<String, List<String>> getGenres() { return genresType; }
 
-    public HashMap<String, ArrayList<String>> getActors() {
+    public Map<String, List<String>> getActors() {
         return actorsName;
     }
 
