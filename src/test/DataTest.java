@@ -2,6 +2,8 @@ import org.junit.Test;
 import org.junit.Assert;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DataTest extends Logic { // наследование для тестирования
 
@@ -32,8 +34,8 @@ public class DataTest extends Logic { // наследование для тес�
 
         genres = data.getGenres();
 
-        Assert.assertEquals(Arrays.asList("Морган Фриман", "Эдвард Нортон", "Брэд Питт", "Хелена Бонем Картер"), data.getActorsInGenre("Драма"));
-        Assert.assertEquals(Arrays.asList("Эдвард Нортон", "Брэд Питт", "Хелена Бонем Картер"), data.getActorsInGenre("Триллер"));
+        Assert.assertEquals(Set.of("Морган Фриман", "Хелена Бонем Картер", "Брэд Питт", "Эдвард Нортон"), data.getActorsInGenre("Драма"));
+        Assert.assertEquals(Set.of("Эдвард Нортон", "Брэд Питт", "Хелена Бонем Картер"), data.getActorsInGenre("Триллер"));
         Assert.assertEquals(films, genres.get("Драма"));
     }
 

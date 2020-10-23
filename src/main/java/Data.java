@@ -7,7 +7,7 @@ class Data
 {
     private Map<String, List<String>> genresType = new HashMap<>();
     private Map<String, List<String>> actorsName = new HashMap<>();
-    private Map<String, List<String>> actorsInGenre = new HashMap<>();
+    private Map<String, Set<String>> actorsInGenre = new HashMap<>();
     private Map<String, String> genresFullName = Map.of(
             "д", "Драма",
             "к", "Комедия",
@@ -37,6 +37,7 @@ class Data
         var split = line.split(";");
         var film = split[0];
         var genres = split[1];
+        var actors = split[2];
         var genreList = new ArrayList<String>();
         for (var genre : genres.split(" "))
         {
@@ -44,26 +45,15 @@ class Data
                 continue;
             var genreFullName = genresFullName.get(genre);
             genreList.add(genreFullName);
-            if (genresType.containsKey(genreFullName))
-                genresType.get(genreFullName).add(film);
-            else
-                genresType.put(genreFullName, new ArrayList<>(Arrays.asList(film)));
+            genresType.computeIfAbsent(genreFullName, key -> new ArrayList<>()).add(film);
 
         }
-        var actors = split[2];
         for (var actor : actors.split(","))
         {
-            if (actorsName.containsKey(actor))
-                actorsName.get(actor).add(film);
-            else
-                actorsName.put(actor, new ArrayList<>(Arrays.asList(film)));
+            actorsName.computeIfAbsent(actor, key -> new ArrayList<>()).add(film);
             for (var genre : genreList)
             {
-                if (actorsInGenre.containsKey(genre)) {
-                    if (!actorsInGenre.get(genre).contains(actor))
-                        actorsInGenre.get(genre).add(actor);
-                }
-                actorsInGenre.computeIfAbsent(genre, key -> new ArrayList<>(Arrays.asList(actor)));
+                actorsInGenre.computeIfAbsent(genre, key -> new HashSet<>()).add(actor);
             }
         }
     }
