@@ -1,2 +1,2 @@
-# MediaBot
-The Bot helps you choose a movie
+# Бот для Telegram
+Телеграм Бот на Java, который помогает выбрать фильм по настроению
